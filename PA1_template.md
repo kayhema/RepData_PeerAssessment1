@@ -1,9 +1,4 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 ##Introduction
 
@@ -34,7 +29,8 @@ This assignment was done in multiple steps shown below.
 
 Here is the code for loading and preprocessing data 
 
-```{r}
+
+```r
 data1<-read.csv("C:/Users/prman_000/Desktop/RProg/RepData/activity.csv")
 data<-na.omit(data1)#Ignoring NA values in data frame
 #Preprocessing data:Turning date into a valid date class  for easier processing
@@ -48,7 +44,8 @@ For this part of the assignment,missing values(NA)in the dataset were ignored.Ca
 First, steps data was split into steps per day and then calculated the total numberof steps per day. As suggested histogram for the total number of steps per day was plotted.Then mean and median were reported.  
 Code for this is as follows.
 
-```{r}
+
+```r
 #Spliting data frame for steps by day
 stepsaday <- split(data$steps, dates$yday)
 
@@ -57,10 +54,25 @@ Totalsteps <- sapply(stepsaday, sum)
 
 #Making histogram of the total number of steps taken each day
 hist(Totalsteps,breaks=10,col='lightblue',xlab="Total No.of Steps taken per day",main="Histogram of Total No.of Steps Taken per Day")
+```
 
+![](./PA1_template_files/figure-html/unnamed-chunk-2-1.png) 
+
+```r
 #Finding mean and median of the total number of steps taken per day
 mean(Totalsteps)
+```
+
+```
+## [1] 10766.19
+```
+
+```r
 median(Totalsteps)
+```
+
+```
+## [1] 10765
 ```
 
 ###3.The average daily activity pattern
@@ -69,15 +81,25 @@ The average number of steps taken were estimated and the time-series plot for 5-
 
 This was done with the following code.
 
-```{r}
+
+```r
 # Finding the average number of steps taken, averaged across all days
 avgsteps<- tapply(data$steps, data$interval, mean)
 plot(row.names(avgsteps),avgsteps, type = "l", xlab = "5-min interval", 
      ylab = "Average across all Days", main = "Average number of steps taken", 
      col = "orange")
+```
+
+![](./PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
+
+```r
 ##Interval with max no.of steps
 Intervalmax<-which.max(avgsteps)
 names(Intervalmax)
+```
+
+```
+## [1] "835"
 ```
 
 Observations:
@@ -90,16 +112,21 @@ Note that there are a number of days/intervals where there are missing values (c
 
 So,the total number of missing values in the dataset (i.e. the total number of rows with NAs) was calculated as follows.
 
-```{r}
 
+```r
 #Totalno.of missing values
 TotalNA<- sum(is.na(data1$steps))
 TotalNA
 ```
 
+```
+## [1] 2304
+```
+
 Average steps in 5-min interval was found and those values were used to replace the missed NA values.
 
-```{r}
+
+```r
 #Filling NA with avg steps in 5 min interval
 Avgsteps<- aggregate(steps ~ interval, data = data1, FUN = mean)
 fillNA <- numeric()
@@ -120,21 +147,43 @@ dataf$steps <- fillNA
 
 A Histogram of total steps per day after filling the 'NA' data was drawn.
 
-```{r}
+
+```r
 #Histogram of totalsteps after filling NA
 stepsadayf <- split(dataf$steps, dates$yday)
+```
 
+```
+## Warning in split.default(dataf$steps, dates$yday): data length is not a
+## multiple of split variable
+```
+
+```r
 #Finding total number of steps for each day
 Totalstepsf <- sapply(stepsadayf, sum)
 hist(Totalstepsf,breaks=10,col='lightblue',xlab="Total No.of Steps taken per day",main="Histogram of Total No.of Steps per Day after filling NA")
 ```
 
+![](./PA1_template_files/figure-html/unnamed-chunk-6-1.png) 
+
 Mean and median of the total number of steps taken per day after filling NA were calculated.
 
-```{r}
+
+```r
 #Finding mean and median of the total number of steps taken per day after filling NA
 mean(Totalsteps)
+```
+
+```
+## [1] 10766.19
+```
+
+```r
 median(Totalsteps)
+```
+
+```
+## [1] 10765
 ```
 
 Observations:
@@ -149,8 +198,8 @@ The dataset with the filled-in missing values was used for this part.From this d
 
 
 
-```{r}
 
+```r
 weekday.or.weekend <- function(date) {
   day <- weekdays(date)
   if (day %in% c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday")) 
@@ -164,11 +213,14 @@ averages <- aggregate(steps ~ interval + day, data = dataf, mean)
 
 The comparision plot between weekday and weekend was plotted as follows
 
-```{r}
+
+```r
 library(lattice)
 xyplot(steps~interval|day,averages, type = "l", layout = c(1, 2), ylab = "Avg Number of Steps", xlab = "5min-Interval", 
        main = "Time Series for Weekend and Weekday Activity Patterns")
 ```
+
+![](./PA1_template_files/figure-html/unnamed-chunk-9-1.png) 
 
 Observations:
 
